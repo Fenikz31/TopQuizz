@@ -1,16 +1,20 @@
 package com.fenikz.topquizz.controller;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fenikz.topquizz.R;
 import com.fenikz.topquizz.model.Question;
 import com.fenikz.topquizz.model.QuestionBank;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -22,21 +26,66 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button mGameAnswer4;
 
     private Question mQuestion;
+    private QuestionBank mQuestionBank;
+
+    private int mScore;
+    private int mNumberOfQuestions;
+
+    public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
+    public static final String BUNDLE_STATE_SCORE = "currentScore";
+    public static final String BUNDLE_STATE_QUESTION = "currentQuestion";
+
+    private boolean mEnableTouchEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        System.out.println("GameActivity::onCreate()");
+
+        mQuestionBank = this.generateQuestion();
+
+        if (savedInstanceState != null) {
+            mScore = savedInstanceState.getInt(BUNDLE_STATE_SCORE);
+            mNumberOfQuestions = savedInstanceState.getInt(BUNDLE_STATE_QUESTION);
+        } else {
+            mScore = 0;
+            mNumberOfQuestions = 4;
+        }
+
+        mEnableTouchEvents = true;
+
         mQuestionText = findViewById(R.id.activity_game_question_text);
         mGameAnswer1 = findViewById(R.id.activity_game_answer1_btn);
         mGameAnswer2 = findViewById(R.id.activity_game_answer2_btn);
         mGameAnswer3 = findViewById(R.id.activity_game_answer3_btn);
         mGameAnswer4 = findViewById(R.id.activity_game_answer4_btn);
 
+        // Use the same listener for the four buttons.
+        // The tag value will be used to distinguish the button triggered
+        mGameAnswer1.setOnClickListener(this);
+        mGameAnswer2.setOnClickListener(this);
+        mGameAnswer3.setOnClickListener(this);
+        mGameAnswer4.setOnClickListener(this);
 
+        // Use the tag property to 'name' the buttons
+        mGameAnswer1.setTag(0);
+        mGameAnswer2.setTag(1);
+        mGameAnswer3.setTag(2);
+        mGameAnswer4.setTag(3);
 
+        mQuestion = mQuestionBank.getQuestion();
+        this.displayQuestion(mQuestion);
+    }
 
-
+    private void displayQuestion(final Question question) {
+        // Set the text for the question text view and the four buttons
+        mQuestionText.setText(question.getQuestion());
+        mGameAnswer1.setText(question.getChoiceList().get(0));
+        mGameAnswer2.setText(question.getChoiceList().get(1));
+        mGameAnswer3.setText(question.getChoiceList().get(2));
+        mGameAnswer4.setText(question.getChoiceList().get(3));
     }
 
     private QuestionBank generateQuestion() {
@@ -101,15 +150,56 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 Arrays.asList("7","12","6","9"),
                 2);
 
-        return new QuestionBank(Arrays.asList(question1, question2, question3, question4,question5, question6, question7, question8, question9, question10, question11,question12,question13, question14,question15));
+        Question question16 = new Question("Quel nom porte le bateau dont Théodore Géricault peint le radeau ?",
+                Arrays.asList("L'albatros","La Méduse ","Le Titanic","Le Black Pearl"),
+                1);
+
+        Question question17 = new Question("Quel nom porte le siège de la police londonienne ?",
+                Arrays.asList("MI-6","Interpol","36 Quai des Orfèvres","Scotland Yard"),
+                3);
+
+        Question question18 = new Question("Quel parti politique a son siège place du Colonel-Fabien à Paris ?",
+                Arrays.asList("Le Parti Communiste Français ", "Le Parti Socialiste","La République En Marche", "Le MoDem")
+                0);
+
+        Question question19 = new Question("Qui cause des problèmes à Michel Blanc dans 'Grosse Fatigue' ?",
+                Arrays.asList("Michel Noir", "Son Oncle","Son sosie","Louis de Funès"),
+                2);
+
+        Question question20 = new Question("A quelle saison le boeuf est-il le plus fécond ?",
+                Arrays.asList("Aucune","L'hiver","Le printemps","l'automne"),
+                0);
+
+
+
+        return new QuestionBank(Arrays.asList(question1,
+                question2,
+                question3,
+                question4,
+                question5,
+                question6,
+                question7,
+                question8,
+                question9,
+                question10,
+                question11,
+                question12,
+                question13,
+                question14,
+                question15,
+                question16,
+                question17,
+                question18,
+                question19,
+                question20));
 
 
         /*
                 "Dans quelle ville se déroule chaque année le Festival interceltique ? \n" +
                 "Lorient \n"
 
-                "Quel nom porte le bateau dont Théodore Géricault peint le radeau ? \n" +
-                "La Méduse \n"
+                " \n" +
+                "\n"
 
                 "Sous quel titre français connaît-on le film \"Vertigo\" d'Alfred Hitchcock ? \n" +
                 "Sueurs froides \n"
@@ -124,31 +214,68 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 "Paul Simon \n"
 
                 "Si ce n'est pas un fruit, qu'est-ce qu'un kiwi ? \n" +
-                "Un oiseau \n" +
-                "Quel nom porte le siège de la police londonienne ? \n" +
-                "Scotland Yard \n" +
-                "Quel parti politique a son siège place du Colonel-Fabien à Paris ? \n" +
-                "Le PCF \n" +
-                "Qui cause des problèmes à Michel Blanc dans \"Grosse Fatigue\" ? \n" +
-                "Son sosie \n" +
+                "Un oiseau \n"
+
                 "A quel mouvement littéraire sont associés Ronsard et du Bellay ? \n" +
                 "La Pléiade \n" +
-                "A quelle saison le boeuf est-il le plus fécond ? \n" +
+                " \n" +
                 "Aucune \n" +
                 "Où le général de Gaulle prononce-t-il son fameux : \"Je vous ai compris\" ? \n" +
                 "Alger ")*/
 
     }
 
-    private void displayQuestion(final Question question) {
-        // Set the text for the question text view and the four buttons
-        mQuestionText.setText(question.getQuestion());
-        mGameAnswer1.setText(question.getChoiceList()).get(0);
-    }
-
     @Override
     public void onClick(View v) {
-        mQuestion = this.generateQuestion();
+        int responseIndex = (int) v.getTag();
 
+        if (responseIndex == mQuestion.getAnswerIndex()) {
+            // Good answer
+            Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
+            mScore++;
+        } else {
+            // Wrong answer
+            Toast.makeText(this, "Wrong answer!", Toast.LENGTH_SHORT).show();
+        }
+
+        mEnableTouchEvents = false;
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mEnableTouchEvents = true;
+
+                // If this is the last question, ends the game.
+                // Else, display the next question.
+                if (--mNumberOfQuestions == 0) {
+                    // End the game
+                    endGame();
+                } else {
+                    mQuestion = mQuestionBank.getQuestion();
+                    displayQuestion(mQuestion);
+                }
+            }
+        }, 2000); // LENGTH_SHORT is usually 2 second long
+
+    }
+
+    private void endGame() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Well done!")
+                .setMessage("Your score is " + mScore)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // End the activity
+                        Intent intent = new Intent();
+                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                })
+                .setCancelable(false)
+                .create()
+                .show();
     }
 }

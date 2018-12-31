@@ -23,27 +23,27 @@ public class Question {
     }
 
     public List<String> getChoiceList(List<String> choiceList) {
+        return mChoiceList;
+    }
+
+    public void setChoiceList(List<String> choiceList) {
         if (mChoiceList == null) {
             throw new IllegalArgumentException("Array cannot be null");
         }
 
         mChoiceList = choiceList;
-
-    }
-
-    public void setChoiceList(List<String> choiceList) {
-        mChoiceList = choiceList;
     }
 
     public int getAnswerIndex(int answerIndex) {
+        return mAnswerIndex;
+    }
+
+    public void setAnswerIndex(int answerIndex) {
+
         if (answerIndex < 0 || answerIndex >= mChoiceList.size()) {
             throw new IllegalArgumentException("Answer index is out of bound");
         }
 
-        mAnswerIndex = answerIndex;
-    }
-
-    public void setAnswerIndex(int answerIndex) {
         mAnswerIndex = answerIndex;
     }
 
