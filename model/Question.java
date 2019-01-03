@@ -9,9 +9,9 @@ public class Question {
     private int mAnswerIndex;
 
     public Question(String question, List<String> choiceList, int answerIndex) {
-        this.mQuestion = question;
-        this.mChoiceList = choiceList;
-        this.mAnswerIndex = answerIndex;
+        this.setQuestion(question);
+        this.setChoiceList(choiceList);
+        this.setAnswerIndex(answerIndex);
     }
 
     public String getQuestion() {
@@ -22,7 +22,7 @@ public class Question {
         mQuestion = question;
     }
 
-    public List<String> getChoiceList(List<String> choiceList) {
+    public List<String> getChoiceList() {
         return mChoiceList;
     }
 
@@ -34,7 +34,7 @@ public class Question {
         mChoiceList = choiceList;
     }
 
-    public int getAnswerIndex(int answerIndex) {
+    public int getAnswerIndex() {
         return mAnswerIndex;
     }
 

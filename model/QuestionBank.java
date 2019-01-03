@@ -2,11 +2,10 @@ package com.fenikz.topquizz.model;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class QuestionBank {
     private List<Question> mQuestionList;
-    private int mNextQuestionIndex = 0;
+    private int mNextQuestionIndex;
 
     public QuestionBank(List<Question> questionList) {
         mQuestionList = questionList;

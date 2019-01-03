@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -159,7 +160,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 3);
 
         Question question18 = new Question("Quel parti politique a son siège place du Colonel-Fabien à Paris ?",
-                Arrays.asList("Le Parti Communiste Français ", "Le Parti Socialiste","La République En Marche", "Le MoDem")
+                Arrays.asList("Le Parti Communiste Français ", "Le Parti Socialiste","La République En Marche", "Le MoDem"),
                 0);
 
         Question question19 = new Question("Qui cause des problèmes à Michel Blanc dans 'Grosse Fatigue' ?",
@@ -258,6 +259,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }, 2000); // LENGTH_SHORT is usually 2 second long
 
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return mEnableTouchEvents && super.dispatchTouchEvent(ev);
+    }
+
 
     private void endGame() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
