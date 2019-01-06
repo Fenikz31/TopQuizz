@@ -57,11 +57,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         mEnableTouchEvents = true;
 
-        mQuestionText = findViewById(R.id.activity_game_question_text);
-        mGameAnswer1 = findViewById(R.id.activity_game_answer1_btn);
-        mGameAnswer2 = findViewById(R.id.activity_game_answer2_btn);
-        mGameAnswer3 = findViewById(R.id.activity_game_answer3_btn);
-        mGameAnswer4 = findViewById(R.id.activity_game_answer4_btn);
+        mQuestionText = (TextView) findViewById(R.id.activity_game_question_text);
+        mGameAnswer1 = (Button) findViewById(R.id.activity_game_answer1_btn);
+        mGameAnswer2 =(Button) findViewById(R.id.activity_game_answer2_btn);
+        mGameAnswer3 = (Button) findViewById(R.id.activity_game_answer3_btn);
+        mGameAnswer4 = (Button) findViewById(R.id.activity_game_answer4_btn);
 
         // Use the same listener for the four buttons.
         // The tag value will be used to distinguish the button triggered
@@ -78,6 +78,74 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         mQuestion = mQuestionBank.getQuestion();
         this.displayQuestion(mQuestion);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(BUNDLE_STATE_SCORE, mScore);
+        outState.putInt(BUNDLE_STATE_QUESTION, mNumberOfQuestions);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int responseIndex = (int) v.getTag();
+
+        if (responseIndex == mQuestion.getAnswerIndex()) {
+            // Good answer
+            Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
+            mScore++;
+        } else {
+            // Wrong answer
+            Toast.makeText(this, "Wrong answer!", Toast.LENGTH_SHORT).show();
+        }
+
+        mEnableTouchEvents = false;
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mEnableTouchEvents = true;
+
+                // If this is the last question, ends the game.
+                // Else, display the next question.
+                if (--mNumberOfQuestions == 0) {
+                    // End the game
+                    endGame();
+                } else {
+                    mQuestion = mQuestionBank.getQuestion();
+                    displayQuestion(mQuestion);
+                }
+            }
+        }, 2000); // LENGTH_SHORT is usually 2 second long
+
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return mEnableTouchEvents && super.dispatchTouchEvent(ev);
+    }
+
+
+    private void endGame() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Well done!")
+                .setMessage("Your score is " + mScore)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // End the activity
+                        Intent intent = new Intent();
+                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                })
+                .setCancelable(false)
+                .create()
+                .show();
     }
 
     private void displayQuestion(final Question question) {
@@ -224,65 +292,5 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 "Où le général de Gaulle prononce-t-il son fameux : \"Je vous ai compris\" ? \n" +
                 "Alger ")*/
 
-    }
-
-    @Override
-    public void onClick(View v) {
-        int responseIndex = (int) v.getTag();
-
-        if (responseIndex == mQuestion.getAnswerIndex()) {
-            // Good answer
-            Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
-            mScore++;
-        } else {
-            // Wrong answer
-            Toast.makeText(this, "Wrong answer!", Toast.LENGTH_SHORT).show();
-        }
-
-        mEnableTouchEvents = false;
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mEnableTouchEvents = true;
-
-                // If this is the last question, ends the game.
-                // Else, display the next question.
-                if (--mNumberOfQuestions == 0) {
-                    // End the game
-                    endGame();
-                } else {
-                    mQuestion = mQuestionBank.getQuestion();
-                    displayQuestion(mQuestion);
-                }
-            }
-        }, 2000); // LENGTH_SHORT is usually 2 second long
-
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        return mEnableTouchEvents && super.dispatchTouchEvent(ev);
-    }
-
-
-    private void endGame() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("Well done!")
-                .setMessage("Your score is " + mScore)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // End the activity
-                        Intent intent = new Intent();
-                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                })
-                .setCancelable(false)
-                .create()
-                .show();
     }
 }
