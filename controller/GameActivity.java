@@ -15,12 +15,20 @@ import android.widget.Toast;
 import com.fenikz.topquizz.R;
 import com.fenikz.topquizz.model.Question;
 import com.fenikz.topquizz.model.QuestionBank;
+import javafx.application.Application;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import model.Question;
+import model.QuestionBank;
 
 import java.util.Arrays;
 
-public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+import static javafx.scene.input.KeyCode.R;
 
-    private TextView mQuestionText;
+public class GameActivity extends Application{
+
+    private TextField mQuestionText;
     private Button mGameAnswer1;
     private Button mGameAnswer2;
     private Button mGameAnswer3;
@@ -37,6 +45,26 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static final String BUNDLE_STATE_QUESTION = "currentQuestion";
 
     private boolean mEnableTouchEvents;
+
+    /**
+     * The main entry point for all JavaFX applications.
+     * The start method is called after the init method has returned,
+     * and after the system is ready for the application to begin running.
+     *
+     * <p>
+     * NOTE: This method is called on the JavaFX Application Thread.
+     * </p>
+     *
+     * @param primaryStage the primary stage for this application, onto which
+     *                     the application scene can be set.
+     *                     Applications may create other stages, if needed, but they will not be
+     *                     primary stages.
+     * @throws Exception if something goes wrong
+     */
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
