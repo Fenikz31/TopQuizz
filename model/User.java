@@ -1,4 +1,4 @@
-package com.fenikz.topquizz.model;
+package model;
 
 public class User {
     private String mFirstName;

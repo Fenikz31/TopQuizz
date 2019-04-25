@@ -1,4 +1,4 @@
-package com.fenikz.topquizz.controller;
+package controller;
 
 import android.content.DialogInterface;
 import android.content.Intent;

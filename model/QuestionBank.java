@@ -1,4 +1,4 @@
-package com.fenikz.topquizz.model;
+package model;
 
 import java.util.Collections;
 import java.util.List;
